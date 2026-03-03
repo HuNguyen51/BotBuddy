@@ -1,0 +1,24 @@
+# ============================================================
+# Model Configuration — Không hardcode bất kỳ thứ gì vào code
+# ============================================================
+
+# --- LLM ---
+llm:
+  model: "ollama/gpt-oss:120b-cloud" # LiteLLM model string
+  temperature: 0.5
+  max_tokens: 128000
+
+# --- Agent ---
+agent:
+  max_iterations: 10                # Max ReAct loop iterations
+  recursion_limit: 20               # LangGraph recursion limit
+
+# --- Vector Store ---
+vector_store:
+  collection_name: "agent_memory"
+  persist_directory: "./data/chroma_db"
+
+# --- Logging ---
+logging:
+  level: "INFO"                     # DEBUG | INFO | WARNING | ERROR
+  json_output: true                 # structlog JSON format

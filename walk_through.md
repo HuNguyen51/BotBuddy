@@ -1,0 +1,13 @@
+- Dùng lệnh `uv run python main.py` để chạy chương trình
+- Đã có các tools thử nghiệm như web_search (duckduckgo), calculator (thực hiện các phép tính)
+---
+- Khởi tạo bộ não Agent trong services
+- Khởi tạo Body Agent trong agents
+- Khởi tạo trí nhớ Agent trong memory
+---
+- checklist:
+    - Tool truy vấn thông tin khách hàng (lịch sử mua hàng, lịch sử trò chuyện)
+    _ Tool truy vấn thông tin dịch vụ của tenant (thông tin về các gói dịch vụ, giá cả, tính năng, ...)
+    - Tool gợi ý sản phẩm (dựa trên thông tin khách hàng và thông tin dịch vụ, và dựa trên mô tả mới nhất của khách hàng)
+    - Tool tìm kiếm hình ảnh sản phẩm dựa trên mô tả
+    - Memory Saving
