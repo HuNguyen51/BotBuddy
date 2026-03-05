@@ -37,6 +37,8 @@ class LLMService:
     def get_chat_model(self, provider: str = "litellm"):
         if provider == "openai":
             return self.get_openai_chat_model()
+        elif provider == "google":
+            return self.get_google_chat_model()
         elif provider == "litellm":
             return self.get_router_chat_model()
         else:
@@ -55,6 +57,20 @@ class LLMService:
             model=DEFAULT_MODEL,
             temperature=self.temperature,
             base_url=DEFAULT_BASE_URL,
+        )
+    
+    def get_google_chat_model(self):
+        """
+        Trả về LangChain-compatible ChatGoogleGenerativeAI instance.
+
+        Sử dụng Gemini 2.5 Flash — model nhanh, hỗ trợ tool calling tốt.
+        API key đọc tự động từ env var GOOGLE_API_KEY.
+        """
+        from langchain_google_genai import ChatGoogleGenerativeAI
+
+        return ChatGoogleGenerativeAI(
+            model="gemini-2.5-flash",
+            temperature=self.temperature,
         )
 
     def get_router_chat_model(self):

@@ -10,9 +10,10 @@ kết hợp với MemorySaver checkpointer cho conversation state.
 
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
 from typing import Any
 
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import AIMessageChunk, HumanMessage
 from langgraph.checkpoint.memory import MemorySaver
 from langchain.agents import create_agent
 
@@ -120,12 +121,184 @@ class BaseAgent:
         logger.info("Agent response — %d chars", len(response))
         return response
 
+    async def astream(
+        self,
+        message: str,
+        *,
+        thread_id: str = "default",
+    ) -> AsyncIterator[dict[str, Any]]:
+        """
+        Async stream — kết hợp cả messages + updates.
+
+        Yield dict với format:
+            {"mode": "messages", "content": "token text"}
+            {"mode": "updates", "node": "agent", "state": {...}}
+
+        Phù hợp cho UI cần vừa hiển thị streaming text,
+        vừa tracking trạng thái từng node (tool calls, reasoning, etc.)
+        """
+        config = {
+            "configurable": {"thread_id": thread_id},
+            "recursion_limit": settings.agent.recursion_limit,
+        }
+
+        logger.info("Agent astream — message='%s', thread_id=%s", message[:100], thread_id)
+
+        async for mode, chunk in self._graph.astream(
+            {"messages": [HumanMessage(content=message)]},
+            config=config,
+            stream_mode=["messages", "updates"],
+        ):
+            if mode == "messages":
+                msg, metadata = chunk
+                if (
+                    isinstance(msg, AIMessageChunk)
+                    and msg.content
+                    and not msg.tool_calls
+                    and not msg.tool_call_chunks
+                ):
+                    text = self._normalize_content(msg.content)
+                    if text:
+                        yield {
+                            "mode": "messages",
+                            "node": metadata.get("langgraph_node", ""),
+                            "content": text,
+                        }
+
+            elif mode == "updates":
+                node_name = next(iter(chunk), None) if chunk else None
+                yield {
+                    "mode": "updates",
+                    "node": node_name,
+                    "state": chunk,
+                }
+
+        logger.info("Agent astream complete — thread_id=%s", thread_id)
+
+    async def astream_messages(
+        self,
+        message: str,
+        *,
+        thread_id: str = "default",
+    ) -> AsyncIterator[str]:
+        """
+        Stream LLM tokens — từng token text của AI response.
+
+        Yield: str (từng đoạn text nhỏ)
+        Phù hợp cho chat UI cần hiển thị typewriter effect.
+        """
+        config = {
+            "configurable": {"thread_id": thread_id},
+            "recursion_limit": settings.agent.recursion_limit,
+        }
+
+        logger.info(
+            "Agent astream_messages — message='%s', thread_id=%s",
+            message[:100], thread_id,
+        )
+
+        async for chunk, metadata in self._graph.astream(
+            {"messages": [HumanMessage(content=message)]},
+            config=config,
+            stream_mode="messages",
+        ):
+            # Chỉ yield AI text chunks (không phải tool calls hay tool results)
+            if (
+                isinstance(chunk, AIMessageChunk)
+                and chunk.content
+                and not chunk.tool_calls
+                and not chunk.tool_call_chunks
+            ):
+                text = self._normalize_content(chunk.content)
+                if text:
+                    yield text
+
+        logger.info("Agent astream_messages complete — thread_id=%s", thread_id)
+
+    async def astream_updates(
+        self,
+        message: str,
+        *,
+        thread_id: str = "default",
+    ) -> AsyncIterator[dict[str, Any]]:
+        """
+        Stream state updates — sau mỗi node step của graph.
+
+        Yield: dict với format:
+            {
+                "node": "agent" | "tools" | ...,
+                "messages": [...],  # messages mới được thêm ở step này
+            }
+
+        Phù hợp cho debugging, monitoring, hoặc UI cần hiển thị
+        từng bước reasoning của agent (tool calls → results → final answer).
+        """
+        config = {
+            "configurable": {"thread_id": thread_id},
+            "recursion_limit": settings.agent.recursion_limit,
+        }
+
+        logger.info(
+            "Agent astream_updates — message='%s', thread_id=%s",
+            message[:100], thread_id,
+        )
+
+        async for update in self._graph.astream(
+            {"messages": [HumanMessage(content=message)]},
+            config=config,
+            stream_mode="updates",
+        ):
+            # update format: {"node_name": {"messages": [...]}}
+            node_name = next(iter(update), None)
+            if node_name is None:
+                continue
+
+            node_state = update[node_name]
+            messages = node_state.get("messages", [])
+
+            yield {
+                "node": node_name,
+                "messages": messages,
+            }
+
+            logger.debug(
+                "Node '%s' completed — %d messages",
+                node_name, len(messages),
+            )
+
+        logger.info("Agent astream_updates complete — thread_id=%s", thread_id)
+
     # ------------------------------------------------------------------
     # Internal
     # ------------------------------------------------------------------
 
     @staticmethod
-    def _extract_response(result: dict[str, Any]) -> str:
+    def _normalize_content(content: str | list[Any]) -> str:
+        """
+        Normalize message content thành plain text.
+
+        Gemini trả content dạng mixed:
+            - str: "hello world"                          (hầu hết các chunks)
+            - list: [{'type':'text', 'text':'...', 'extras': {...}}, ...]  (chunk đầu)
+
+        OpenAI luôn trả str.
+        Method này đảm bảo output luôn là str thuần túy.
+        """
+        if isinstance(content, str):
+            return content
+
+        if isinstance(content, list):
+            parts = []
+            for item in content:
+                if isinstance(item, str):
+                    parts.append(item)
+                elif isinstance(item, dict) and item.get("type") == "text":
+                    parts.append(item.get("text", ""))
+            return "".join(parts)
+
+        return str(content)
+
+    def _extract_response(self, result: dict[str, Any]) -> str:
         """Lấy text response từ LangGraph result."""
         messages = result.get("messages", [])
         if not messages:
@@ -133,4 +306,6 @@ class BaseAgent:
 
         # Lấy message cuối cùng (AI response)
         last_message = messages[-1]
-        return last_message.content if hasattr(last_message, "content") else str(last_message)
+        if hasattr(last_message, "content"):
+            return self._normalize_content(last_message.content)
+        return str(last_message)

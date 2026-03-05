@@ -5,13 +5,13 @@
 # --- LLM ---
 llm:
   model: "ollama/gpt-oss:120b-cloud" # LiteLLM model string
-  temperature: 0.5
+  temperature: 0.1
   max_tokens: 128000
 
 # --- Agent ---
 agent:
   max_iterations: 10                # Max ReAct loop iterations
-  recursion_limit: 20               # LangGraph recursion limit
+  recursion_limit: 5               # LangGraph recursion limit
 
 # --- Vector Store ---
 vector_store:

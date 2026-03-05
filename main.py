@@ -1,72 +1,101 @@
-"""
-Main Entry Point — Agentic AI System.
-
-Interactive chat với Research Agent qua terminal.
-
-Cách chạy:
-    uv run python main.py
-    
-Gõ tin nhắn → Enter → Agent trả lời.
-Gõ 'exit' hoặc Ctrl+C để thoát.
-"""
-
-from __future__ import annotations
-
+import multiprocessing.popen_spawn_posix
+import multiprocessing.popen_spawn_posix
+import multiprocessing.popen_spawn_posix
+import multiprocessing.popen_spawn_posix
+from endpoints.schemas import (
+    ChatRequest,
+    ChatResponse,
+    StreamDone,
+    StreamError,
+    StreamNodeUpdate,
+    StreamToken,
+)
 from utils.logger import setup_logger
 
-# Setup ROOT logger TRƯỚC mọi thứ khác (name=None → root logger)
-logger = setup_logger(None, log_file="logs/app.log")
+logger = setup_logger(__name__)
 
-BANNER = """
-╔══════════════════════════════════════════════╗
-║          🤖 ScanX AI Agent Chat              ║
-║                                              ║
-║  Gõ tin nhắn rồi nhấn Enter để trò chuyện.  ║
-║  Gõ 'exit' hoặc Ctrl+C để thoát.            ║
-╚══════════════════════════════════════════════╝
-"""
+def _get_agent():
+    """Lazy-load agent singleton — tránh circular imports & startup delay."""
+    from endpoints._agent_singleton import get_agent
 
+    return get_agent()
 
-def main() -> None:
-    """Interactive chat loop với Research Agent."""
-    from services.llm_service import LLMService # brain
-    from agents.research_agent import ResearchAgent # body
-    from memory.conversation_memory import memory # memory
+async def chat_stream(request: ChatRequest):
+    """SSE streaming chat — trả về từng token real-time."""
+    agent = _get_agent()
 
-    logger.info("Agentic AI System starting...")
+    logger.info(
+        "Stream request — message='%s', thread_id=%s",
+        request.message[:100], request.thread_id,
+    )
 
-    model = LLMService().get_chat_model(provider="openai") # brain_init
-    agent = ResearchAgent(model=model, checkpointer=memory) # body_init with brain and memory
-    
-    thread_id = "interactive-session"
-
-    print(BANNER)
-
-    while True:
+    async def event_generator():
+        """Generate SSE events từ agent astream."""
         try:
-            user_input = input("\n🧑 You: ").strip()
-        except (KeyboardInterrupt, EOFError):
-            print("\n\n👋 Tạm biệt!")
-            break
+            async for event in agent.astream(
+                request.message,
+                thread_id=request.thread_id,
+            ):
+                if event["mode"] == "messages":
+                    node_name = event.get("node", "unknown")
 
-        if not user_input:
-            continue
+                    sse_event = StreamToken(
+                        node=node_name,
+                        content=event["content"],
+                    )
+                    yield sse_event
 
-        if user_input.lower() in ("exit", "quit", "q"):
-            print("\n👋 Tạm biệt!")
-            break
+                elif event["mode"] == "updates":
+                    node_name = event.get("node", "unknown")
+                    if node_name == "model":
+                        sse_event = StreamNodeUpdate(
+                            node=node_name, 
+                            state=event["state"]['model']
+                        )
+                    elif node_name == "tools":
+                        sse_event = StreamNodeUpdate(
+                            node=node_name, 
+                            state=event["state"]["tools"]
+                        )
+                    else:
+                        sse_event = StreamNodeUpdate(node=node_name, state=event)
 
-        logger.info("User: %s", user_input)
+                    yield sse_event
 
-        try:
-            response = agent.invoke(user_input, thread_id=thread_id)
-            logger.info("Agent: %s", response[:200])
-            print(f"\n🤖 Agent: {response}")
+            # Stream hoàn tất
+            done_event = StreamDone()
+            yield done_event
+
         except Exception as e:
-            logger.error("Agent error: %s", e)
-            print(f"\n❌ Lỗi: {e}")
+            logger.error("Stream error: %s", e)
+            error_event = StreamError(detail=str(e))
+            yield error_event
 
+    return event_generator()
+
+async def run(message: str, thread_id: str):
+    request = ChatRequest(message=message, thread_id=thread_id)
+    generator = await chat_stream(request)
+    async for event in generator:
+        event_type = event.type
+        if event_type == "token":
+            print(event.content, end="", flush=True)
+        elif event_type == "node_update":
+            if event.node == "model":
+                if event.state['messages'][-1].response_metadata['finish_reason'] == "stop":
+                    print()
+            print("---",event.state, "---")
+        elif event_type == "done":
+            print("---",event.message, "---")
+        elif event_type == "error":
+            print("---",event.detail, "---")
+        else:
+            print(event)
+    
 
 if __name__ == "__main__":
-    main()
-
+    import asyncio
+    asyncio.run(run("sử dụng tool để giải các bài toán bên dưới: \n4+11*2=?", "session-1"))
+    asyncio.run(run("11-12+3*9=?", "session-1"))
+    print("="*50)
+    asyncio.run(run("11-12+3*9=?", "session-2"))
