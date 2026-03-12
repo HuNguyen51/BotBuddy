@@ -2,7 +2,7 @@
 Main Entry Point — FastAPI Server.
 
 Cách chạy:
-    uv run uvicorn main:app --reload --port 8000
+    uv run uvicorn server:app --reload --port 8000
 
 Endpoints:
     POST /chat          → Non-streaming chat

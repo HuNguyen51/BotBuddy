@@ -70,24 +70,24 @@ class BaseAgent:
         self,
         message: str,
         *,
-        thread_id: str = "default",
+        configurable: dict[str, Any] = {},
     ) -> str:
         """
         Synchronous invoke — gửi message và nhận response.
 
         Args:
             message: User message
-            thread_id: Session ID cho memory (cùng thread_id = cùng conversation)
+            configurable: Cấu hình cho agent
 
         Returns:
             Agent response text
         """
         config = {
-            "configurable": {"thread_id": thread_id},
+            "configurable": configurable,
             "recursion_limit": settings.agent.recursion_limit,
         }
 
-        logger.info("Agent invoke — message='%s', thread_id=%s", message[:100], thread_id)
+        logger.info("Agent invoke — message='%s', configurable=%s", message[:100], configurable)
 
         result = self._graph.invoke(
             {"messages": [HumanMessage(content=message)]},
@@ -102,15 +102,15 @@ class BaseAgent:
         self,
         message: str,
         *,
-        thread_id: str = "default",
+        configurable: dict[str, Any] = {},
     ) -> str:
         """Async invoke."""
         config = {
-            "configurable": {"thread_id": thread_id},
+            "configurable": configurable,
             "recursion_limit": settings.agent.recursion_limit,
         }
 
-        logger.info("Agent ainvoke — message='%s', thread_id=%s", message[:100], thread_id)
+        logger.info("Agent ainvoke — message='%s', configurable=%s", message[:100], configurable)
 
         result = await self._graph.ainvoke(
             {"messages": [HumanMessage(content=message)]},
@@ -125,7 +125,7 @@ class BaseAgent:
         self,
         message: str,
         *,
-        thread_id: str = "default",
+        configurable: dict[str, Any] = {},
     ) -> AsyncIterator[dict[str, Any]]:
         """
         Async stream — kết hợp cả messages + updates.
@@ -138,11 +138,11 @@ class BaseAgent:
         vừa tracking trạng thái từng node (tool calls, reasoning, etc.)
         """
         config = {
-            "configurable": {"thread_id": thread_id},
+            "configurable": configurable,
             "recursion_limit": settings.agent.recursion_limit,
         }
 
-        logger.info("Agent astream — message='%s', thread_id=%s", message[:100], thread_id)
+        logger.info("Agent astream — message='%s', configurable=%s", message[:100], configurable)
 
         async for mode, chunk in self._graph.astream(
             {"messages": [HumanMessage(content=message)]},
@@ -173,13 +173,13 @@ class BaseAgent:
                     "state": chunk,
                 }
 
-        logger.info("Agent astream complete — thread_id=%s", thread_id)
+        logger.info("Agent astream complete — configurable=%s", configurable)
 
     async def astream_messages(
         self,
         message: str,
         *,
-        thread_id: str = "default",
+        configurable: dict[str, Any] = {},
     ) -> AsyncIterator[str]:
         """
         Stream LLM tokens — từng token text của AI response.
@@ -188,13 +188,13 @@ class BaseAgent:
         Phù hợp cho chat UI cần hiển thị typewriter effect.
         """
         config = {
-            "configurable": {"thread_id": thread_id},
+            "configurable": configurable,
             "recursion_limit": settings.agent.recursion_limit,
         }
 
         logger.info(
-            "Agent astream_messages — message='%s', thread_id=%s",
-            message[:100], thread_id,
+            "Agent astream_messages — message='%s', configurable=%s",
+            message[:100], configurable,
         )
 
         async for chunk, metadata in self._graph.astream(
@@ -213,13 +213,13 @@ class BaseAgent:
                 if text:
                     yield text
 
-        logger.info("Agent astream_messages complete — thread_id=%s", thread_id)
+        logger.info("Agent astream_messages complete — configurable=%s", configurable)
 
     async def astream_updates(
         self,
         message: str,
         *,
-        thread_id: str = "default",
+        configurable: dict[str, Any] = {},
     ) -> AsyncIterator[dict[str, Any]]:
         """
         Stream state updates — sau mỗi node step của graph.
@@ -234,12 +234,12 @@ class BaseAgent:
         từng bước reasoning của agent (tool calls → results → final answer).
         """
         config = {
-            "configurable": {"thread_id": thread_id},
+            "configurable": configurable,
             "recursion_limit": settings.agent.recursion_limit,
         }
 
         logger.info(
-            "Agent astream_updates — message='%s', thread_id=%s",
+            "Agent astream_updates — message='%s', configurable=%s",
             message[:100], thread_id,
         )
 

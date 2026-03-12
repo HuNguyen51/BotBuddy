@@ -28,6 +28,11 @@ class ChatRequest(BaseModel):
         description="Session ID — cùng thread_id = cùng conversation history.",
         examples=["user-123-session-1"],
     )
+    tenant_id: str = Field(
+        default="default",
+        description="Tenant ID — phân biệt doanh nghiệp.",
+        examples=["tenant-123"],
+    )
 
 
 # ------------------------------------------------------------------

@@ -26,11 +26,14 @@ dependencies = [
     "fastapi>=0.135.1",
     "uvicorn>=0.41.0",
     "sse-starlette>=3.3.2",
+    "voyageai>=0.3.7",
+    "sentence-transformers>=5.2.3",
+    "qdrant-client>=1.17.0",
 ]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["data*", "memory*", "agents*", "configs*", "services*"]
+include = ["data*", "memory*", "agents*", "configs*", "services*", "tools*", "memory*", "utils*", "prompts*"]
 
 [dependency-groups]
 dev = [

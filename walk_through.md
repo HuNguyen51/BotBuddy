@@ -1,20 +1,24 @@
-MỤC TIÊU: ... 
+MỤC TIÊU: Chatbot sử dụng thông tin ngữ cảnh riêng của từng tenant và tư vấn cá nhân hoá cho user
 ---
-- Dùng lệnh `uv run python main.py` để chạy chương trình
-- Đã có các tools thử nghiệm như web_search (duckduckgo), calculator (thực hiện các phép tính)
+- DONE: Dùng lệnh `uv run python main.py` để chạy chương trình
+- DONE: Đã có các tools thử nghiệm như web_search (duckduckgo), calculator (thực hiện các phép tính)
 ---
-- Khởi tạo bộ não Agent trong services
-- Khởi tạo Body Agent trong agents
-- Khởi tạo trí nhớ Agent trong memory
+- DONE: Khởi tạo bộ não Agent trong services
+- DONE: Khởi tạo "Body" Agent trong agents
+- PENDING: Khởi tạo trí nhớ Agent trong memory
 ---
-- Định nghĩa endpoint
-
-
-
-- checklist:
-    - Tool truy vấn thông tin khách hàng (lịch sử mua hàng, lịch sử trò chuyện)
-    _ Tool truy vấn thông tin dịch vụ của tenant (thông tin về các gói dịch vụ, giá cả, tính năng, ...)
-    - Tool gợi ý sản phẩm (dựa trên thông tin khách hàng và thông tin dịch vụ, và dựa trên mô tả mới nhất của khách hàng)
-    - Tool tìm kiếm hình ảnh sản phẩm dựa trên mô tả
-    - Memory Saving
-    -> workflow, orchestration
+- PENDING: Tool truy vấn thông tin khách hàng (lịch sử mua hàng, lịch sử trò chuyện)
+- PENDING: Tool truy vấn thông tin dịch vụ của tenant (thông tin về các gói dịch vụ, giá cả, tính năng, ...)
+- PENDING: Tool gợi ý sản phẩm (dựa trên thông tin khách hàng và thông tin dịch vụ, và dựa trên mô tả mới nhất của khách hàng)
+- PENDING: Tool tìm kiếm hình ảnh sản phẩm dựa trên mô tả
+- PENDING: Memory Saving
+- PENDING: workflow, orchestration
+---
+- DONE: Định nghĩa endpoint
+- RUNNING: Đang làm tới vector database sử dụng Qdrant và voyage-4-nano
+---
+- DONE: Định nghĩa vectorstore cho RAG
+- PENDING: score cho các trường dữ liệu (món ăn,...)
+- PENDING: cần có trigger để nạp data vào vectorstore
+- NOTE: cần chạy trước `python -m tools.ingest_fnb_data` để nạp data vào vectorstore
+- PENDING: lập hoá đơn, thanh toán

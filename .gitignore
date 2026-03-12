@@ -61,3 +61,5 @@ data/vector_store/
 # UV lock (optional — bỏ dòng này nếu muốn commit lock file)
 # ========================
 # uv.lock
+
+external_data_storage/

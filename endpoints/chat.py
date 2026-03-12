@@ -101,9 +101,13 @@ async def chat_stream(request: ChatRequest) -> EventSourceResponse:
     async def event_generator():
         """Generate SSE events từ agent astream."""
         try:
+            configurable = {
+                "thread_id": request.thread_id,
+                "tenant_id": request.tenant_id,
+            }
             async for event in agent.astream(
                 request.message,
-                thread_id=request.thread_id,
+                configurable=configurable,
             ):
                 if event["mode"] == "messages":
                     sse_event = StreamToken(
@@ -114,7 +118,20 @@ async def chat_stream(request: ChatRequest) -> EventSourceResponse:
 
                 elif event["mode"] == "updates":
                     node_name = event.get("node", "unknown")
-                    sse_event = StreamNodeUpdate(node=node_name, content=event.get("content", "Gọi tool để thực hiện yêu cầu"))
+                    if node_name == "model":
+                        sse_event = StreamNodeUpdate(
+                            node=node_name, 
+                            state=event["state"]["model"]
+                        )
+                    elif node_name == "tools":
+                        sse_event = StreamNodeUpdate(
+                            node=node_name, 
+                            state=event["state"]["tools"]
+                        )
+                    else:
+                        sse_event = StreamNodeUpdate(node=node_name, state=event)
+
+
                     yield {"data": sse_event.model_dump_json()}
 
             # Stream hoàn tất
