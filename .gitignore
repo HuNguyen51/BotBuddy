@@ -1,13 +1,7 @@
-# ========================
-# Secrets & Environment
-# ========================
 .env
 .env.local
 .env.production
 
-# ========================
-# Python
-# ========================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -18,16 +12,10 @@ dist/
 build/
 *.whl
 
-# ========================
-# Virtual Environment
-# ========================
 .venv/
 venv/
 env/
 
-# ========================
-# IDE / Editor
-# ========================
 .vscode/
 .idea/
 *.swp
@@ -35,9 +23,6 @@ env/
 *~
 .DS_Store
 
-# ========================
-# Testing & Cache
-# ========================
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -45,21 +30,13 @@ htmlcov/
 .coverage
 coverage.xml
 
-# ========================
-# Logs
-# ========================
 logs/
 *.log
 
-# ========================
-# Data (generated at runtime)
-# ========================
 data/chroma_db/
 data/vector_store/
 
-# ========================
-# UV lock (optional — bỏ dòng này nếu muốn commit lock file)
-# ========================
-# uv.lock
+uv.lock
 
 external_data_storage/
+check_list.md
