@@ -6,10 +6,10 @@ Document store và embedding được inject từ bên ngoài.
 
 Usage::
 
-    from data.documents import QdrantDocumentStore
-    from data.embeddings import Voyage4NanoEmbedding
-    from data.scoring import ProductScorer
-    from data.ingestion import FnBDataIngestor
+    from src.data.documents import QdrantDocumentStore
+    from src.data.embeddings import Voyage4NanoEmbedding
+    from src.data.scoring import ProductScorer
+    from src.data.ingestion import FnBDataIngestor
 
     embedding = Voyage4NanoEmbedding()
     store = QdrantDocumentStore(collection_name="fnb_menu", embedding=embedding)
@@ -20,6 +20,6 @@ Usage::
     print(report.summary())
 """
 
-from data.ingestion.fnb_ingestor import FnBDataIngestor, IngestionReport
+from src.data.ingestion.fnb_ingestor import FnBDataIngestor, IngestionReport
 
 __all__ = ["FnBDataIngestor", "IngestionReport"]

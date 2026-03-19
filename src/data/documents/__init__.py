@@ -8,8 +8,8 @@ Store KHÔNG chịu trách nhiệm embed — caller tự embed rồi truyền po
 
 Usage::
 
-    from data.documents import QdrantDocumentStore, get_qdrant_client
-    from data.embeddings import Voyage4NanoEmbedding
+    from src.data.documents import QdrantDocumentStore, get_qdrant_client
+    from src.data.embeddings import Voyage4NanoEmbedding
     from qdrant_client.models import PointStruct
 
     # Init
@@ -34,7 +34,7 @@ Usage::
     store.delete_collection("old_collection")
 """
 
-from data.documents.base_document_store import BaseDocumentStore
-from data.documents.qdrant_store import QdrantDocumentStore, get_qdrant_client
+from src.data.documents.base_document_store import BaseDocumentStore
+from src.data.documents.qdrant_store import QdrantDocumentStore, get_qdrant_client
 
 __all__ = ["BaseDocumentStore", "QdrantDocumentStore", "get_qdrant_client"]

@@ -17,8 +17,8 @@ from langchain_core.messages import AIMessageChunk, HumanMessage
 from langgraph.checkpoint.memory import MemorySaver
 from langchain.agents import create_agent
 
-from configs.settings import settings
-from utils.logger import setup_logger
+from src.settings import settings
+from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 

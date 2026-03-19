@@ -18,7 +18,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from utils.logger import setup_logger
+from src.utils.logger import setup_logger
 
 # Setup ROOT logger
 logger = setup_logger(None, log_file="logs/app.log")
@@ -80,3 +80,12 @@ app.include_router(chat_router)
 async def health():
     """Health check endpoint."""
     return {"status": "ok", "service": "scanx-agent"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        "server:app",
+        host="localhost",
+        port=8000,
+        reload=True,
+    )

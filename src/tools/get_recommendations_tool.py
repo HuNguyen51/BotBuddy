@@ -13,7 +13,7 @@ product_ids, hệ thống tự biết đang serve tenant nào.
 
 Usage::
 
-    from tools.get_recommendations_tool import create_get_recommendations_tool
+    from src.tools.get_recommendations_tool import create_get_recommendations_tool
 
     get_recommendations = create_get_recommendations_tool(
         data_path=Path("external_data_storage/fnb.json")
@@ -30,7 +30,7 @@ from typing import Annotated, Any
 from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import tool
 
-from utils.logger import setup_logger
+from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 

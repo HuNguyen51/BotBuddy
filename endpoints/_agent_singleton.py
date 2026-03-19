@@ -9,10 +9,10 @@ from __future__ import annotations
 
 from functools import lru_cache
 
-from agents.fnb_agent import FnBAgent
-from memory.conversation_memory import memory
-from services.llm_service import LLMService
-from utils.logger import setup_logger
+from src.agents.fnb_agent import FnBAgent
+from src.memory.conversation_memory import memory
+from src.services.llm_service import LLMService
+from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 

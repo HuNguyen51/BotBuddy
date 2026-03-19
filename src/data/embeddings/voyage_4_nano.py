@@ -7,7 +7,7 @@ Use case: RAG, semantic search — chạy local, không cần API key.
 
 Usage::
 
-    from data.embeddings.voyage_4_nano import Voyage4NanoEmbedding
+    from src.data.embeddings.voyage_4_nano import Voyage4NanoEmbedding
 
     embedding = Voyage4NanoEmbedding()
     vectors = embedding.embed_documents(["xin chào", "hello"])
@@ -18,8 +18,8 @@ from __future__ import annotations
 
 from sentence_transformers import SentenceTransformer
 
-from data.embeddings.base_embedding import BaseEmbedding
-from utils.logger import setup_logger
+from src.data.embeddings.base_embedding import BaseEmbedding
+from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 

@@ -10,11 +10,11 @@ from __future__ import annotations
 
 from typing import Any
 
-from agents.base_agent import BaseAgent
-from tools.calculator_tool import calculator
-from tools.web_search_tool import web_search
+from src.agents.base_agent import BaseAgent
+from src.tools.calculator_tool import calculator
+from src.tools.web_search_tool import web_search
 
-from prompts.research_prompt import RESEARCH_SYSTEM_PROMPT
+from src.prompts.research_prompt import RESEARCH_SYSTEM_PROMPT
 
 
 

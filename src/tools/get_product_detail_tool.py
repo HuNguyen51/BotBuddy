@@ -10,7 +10,7 @@ product_id, hệ thống tự biết đang serve tenant nào.
 
 Usage::
 
-    from tools.get_product_detail_tool import create_get_product_detail_tool
+    from src.tools.get_product_detail_tool import create_get_product_detail_tool
 
     get_product_detail = create_get_product_detail_tool(
         data_path=Path("external_data_storage/fnb.json")
@@ -27,7 +27,7 @@ from typing import Annotated, Any
 from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import tool
 
-from utils.logger import setup_logger
+from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 

@@ -16,8 +16,8 @@ from typing import Any
 
 import litellm
 
-from configs.settings import settings
-from utils.logger import setup_logger
+from src.settings import settings
+from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 

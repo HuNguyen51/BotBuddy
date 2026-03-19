@@ -31,10 +31,6 @@ dependencies = [
     "qdrant-client>=1.17.0",
 ]
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["data*", "memory*", "agents*", "configs*", "services*", "tools*", "memory*", "utils*", "prompts*"]
-
 [dependency-groups]
 dev = [
     "pytest>=9.0.2",

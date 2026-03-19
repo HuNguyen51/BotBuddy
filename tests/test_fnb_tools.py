@@ -11,9 +11,9 @@ from pathlib import Path
 
 import pytest
 
-from tools.get_product_detail_tool import create_get_product_detail_tool
-from tools.get_recommendations_tool import create_get_recommendations_tool
-from tools.menu_search_tool import create_menu_search_tool
+from src.tools.get_product_detail_tool import create_get_product_detail_tool
+from src.tools.get_recommendations_tool import create_get_recommendations_tool
+from src.tools.menu_search_tool import create_menu_search_tool
 
 # ------------------------------------------------------------------
 # Fixtures

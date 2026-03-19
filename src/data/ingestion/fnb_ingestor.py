@@ -8,10 +8,10 @@ Document store và embedding đều được inject từ bên ngoài (Dependency
 
 Usage::
 
-    from data.embeddings import Voyage4NanoEmbedding
-    from data.documents import QdrantDocumentStore, get_qdrant_client
-    from data.scoring import ProductScorer
-    from data.ingestion import FnBDataIngestor
+    from src.data.embeddings import Voyage4NanoEmbedding
+    from src.data.documents import QdrantDocumentStore, get_qdrant_client
+    from src.data.scoring import ProductScorer
+    from src.data.ingestion import FnBDataIngestor
 
     # Init dependencies
     embedding = Voyage4NanoEmbedding()
@@ -44,10 +44,10 @@ from typing import Any
 
 from qdrant_client.models import PointStruct
 
-from data.documents.base_document_store import BaseDocumentStore
-from data.embeddings.base_embedding import BaseEmbedding
-from data.scoring.product_scorer import ProductScorer, ScoringReport
-from utils.logger import setup_logger
+from src.data.documents.base_document_store import BaseDocumentStore
+from src.data.embeddings.base_embedding import BaseEmbedding
+from src.data.scoring.product_scorer import ProductScorer, ScoringReport
+from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 

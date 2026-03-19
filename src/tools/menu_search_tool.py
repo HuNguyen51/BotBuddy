@@ -14,9 +14,9 @@ lúc tạo tool qua closure.
 
 Usage::
 
-    from data.documents import QdrantDocumentStore, get_qdrant_client
-    from data.embeddings import Voyage4NanoEmbedding
-    from tools.menu_search_tool import create_menu_search_tool
+    from src.data.documents import QdrantDocumentStore, get_qdrant_client
+    from src.data.embeddings import Voyage4NanoEmbedding
+    from src.tools.menu_search_tool import create_menu_search_tool
 
     embedding = Voyage4NanoEmbedding()
     client = get_qdrant_client(path="external_data_storage/qdrant_db")
@@ -39,9 +39,9 @@ from langchain_core.tools import tool
 
 from qdrant_client.models import FieldCondition, Filter, MatchValue, ScoredPoint
 
-from data.documents.base_document_store import BaseDocumentStore
-from data.embeddings.base_embedding import BaseEmbedding
-from utils.logger import setup_logger
+from src.data.documents.base_document_store import BaseDocumentStore
+from src.data.embeddings.base_embedding import BaseEmbedding
+from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 

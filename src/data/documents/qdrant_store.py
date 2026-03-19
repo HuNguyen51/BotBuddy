@@ -11,7 +11,7 @@ Hỗ trợ:
 
 Usage::
 
-    from data.documents import QdrantDocumentStore
+    from src.data.documents import QdrantDocumentStore
 
     store = QdrantDocumentStore(collection_name="fnb_collection")
 
@@ -53,8 +53,8 @@ from qdrant_client.models import (
     PointIdsList 
 )
 
-from data.documents.base_document_store import BaseDocumentStore
-from utils.logger import setup_logger
+from src.data.documents.base_document_store import BaseDocumentStore
+from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 

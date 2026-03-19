@@ -7,7 +7,7 @@ Dùng QdrantClient(":memory:") để test in-memory, không tạo file trên dis
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, PointStruct
 
-from data.documents.qdrant_store import QdrantDocumentStore
+from src.data.documents.qdrant_store import QdrantDocumentStore
 
 
 # ------------------------------------------------------------------

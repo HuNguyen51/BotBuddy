@@ -4,7 +4,7 @@ Test Embeddings — Test BaseEmbedding interface bằng mock subclass.
 Không load model thật (Voyage4Nano nặng), dùng fake embedding để test logic.
 """
 
-from data.embeddings.base_embedding import BaseEmbedding
+from src.data.embeddings.base_embedding import BaseEmbedding
 
 
 # ------------------------------------------------------------------

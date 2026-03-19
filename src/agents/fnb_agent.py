@@ -9,7 +9,7 @@ Kế thừa BaseAgent, thêm:
 
 Usage::
 
-    from agents.fnb_agent import FnBAgent
+    from src.agents.fnb_agent import FnBAgent
 
     agent = FnBAgent(model=llm)
 
@@ -26,17 +26,17 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from agents.base_agent import BaseAgent
-from data.documents.qdrant_store import (
+from src.agents.base_agent import BaseAgent
+from src.data.documents.qdrant_store import (
     DEFAULT_QDRANT_PATH,
     QdrantDocumentStore,
     get_qdrant_client,
 )
-from data.embeddings.voyage_4_nano import Voyage4NanoEmbedding
-from tools.get_product_detail_tool import create_get_product_detail_tool
-from tools.get_recommendations_tool import create_get_recommendations_tool
-from tools.menu_search_tool import create_menu_search_tool
-from utils.logger import setup_logger
+from src.data.embeddings.voyage_4_nano import Voyage4NanoEmbedding
+from src.tools.get_product_detail_tool import create_get_product_detail_tool
+from src.tools.get_recommendations_tool import create_get_recommendations_tool
+from src.tools.menu_search_tool import create_menu_search_tool
+from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 
@@ -50,7 +50,7 @@ _DEFAULT_COLLECTION = "fnb_menu"
 # ------------------------------------------------------------------
 # System prompt
 # ------------------------------------------------------------------
-from prompts.fnb_prompt import FNB_SYSTEM_PROMPT
+from src.prompts.fnb_prompt import FNB_SYSTEM_PROMPT
 
 # ------------------------------------------------------------------
 # FnBAgent

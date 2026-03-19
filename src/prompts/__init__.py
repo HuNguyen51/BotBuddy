@@ -6,14 +6,14 @@ Giúp dễ xem xét, chỉnh sửa, và quản lý prompt mà không cần sửa
 
 Usage::
 
-    from prompts import FNB_SYSTEM_PROMPT, RESEARCH_SYSTEM_PROMPT, DEFAULT_SYSTEM_PROMPT
+    from src.prompts import FNB_SYSTEM_PROMPT, RESEARCH_SYSTEM_PROMPT, DEFAULT_SYSTEM_PROMPT
 
     agent = BaseAgent(system_prompt=FNB_SYSTEM_PROMPT)
 """
 
-from prompts.base_prompt import DEFAULT_SYSTEM_PROMPT
-from prompts.fnb_prompt import FNB_SYSTEM_PROMPT
-from prompts.research_prompt import RESEARCH_SYSTEM_PROMPT
+from src.prompts.base_prompt import DEFAULT_SYSTEM_PROMPT
+from src.prompts.fnb_prompt import FNB_SYSTEM_PROMPT
+from src.prompts.research_prompt import RESEARCH_SYSTEM_PROMPT
 
 __all__ = [
     "DEFAULT_SYSTEM_PROMPT",

@@ -4,7 +4,7 @@ Test Scoring — Test ProductScorer, ScoredProduct, ScoringReport.
 Test pure logic — không cần external services.
 """
 
-from data.scoring.product_scorer import ProductScorer, ScoredProduct, ScoringReport
+from src.data.scoring.product_scorer import ProductScorer, ScoredProduct, ScoringReport
 
 
 # ------------------------------------------------------------------

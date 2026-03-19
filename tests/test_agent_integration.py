@@ -23,16 +23,16 @@ class TestAgentIntegration:
 
     def test_agent_init(self):
         """Agent khởi tạo thành công."""
-        from agents.base_agent import BaseAgent
-        from tools.calculator_tool import calculator
+        from src.agents.base_agent import BaseAgent
+        from src.tools.calculator_tool import calculator
 
         agent = BaseAgent(tools=[calculator],llm_service=llm_service)
         assert agent is not None
 
     def test_agent_calculator_task(self):
         """Agent gọi calculator tool và trả về kết quả đúng."""
-        from agents.base_agent import BaseAgent
-        from tools.calculator_tool import calculator
+        from src.agents.base_agent import BaseAgent
+        from src.tools.calculator_tool import calculator
 
         agent = BaseAgent(
             tools=[calculator],
@@ -45,7 +45,7 @@ class TestAgentIntegration:
 
     def test_research_agent_init(self):
         """ResearchAgent khởi tạo với đúng tools."""
-        from agents.research_agent import ResearchAgent
+        from src.agents.research_agent import ResearchAgent
 
         agent = ResearchAgent(llm_service=llm_service)
         assert agent is not None

@@ -11,7 +11,7 @@ Weighted Scoring:
 
 Usage::
 
-    from data.scoring import ProductScorer
+    from src.data.scoring import ProductScorer
 
     scorer = ProductScorer(threshold=60)
 
@@ -29,7 +29,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from utils.logger import setup_logger
+from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 

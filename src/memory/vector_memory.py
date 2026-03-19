@@ -8,8 +8,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from services.vector_store_service import VectorStoreService
-from utils.logger import setup_logger
+from src.services.vector_store_service import VectorStoreService
+from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 
