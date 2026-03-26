@@ -22,14 +22,13 @@ from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 
-
-class BaseAgent:
+class ReActAgent:
     """
     ReAct Agent dựa trên LangGraph.
 
     Usage::
 
-        agent = BaseAgent(
+        agent = ReActAgent(
             tools=[web_search, calculator],
             system_prompt="You are a helpful assistant.",
         )
@@ -174,99 +173,6 @@ class BaseAgent:
                 }
 
         logger.info("Agent astream complete — configurable=%s", configurable)
-
-    async def astream_messages(
-        self,
-        message: str,
-        *,
-        configurable: dict[str, Any] = {},
-    ) -> AsyncIterator[str]:
-        """
-        Stream LLM tokens — từng token text của AI response.
-
-        Yield: str (từng đoạn text nhỏ)
-        Phù hợp cho chat UI cần hiển thị typewriter effect.
-        """
-        config = {
-            "configurable": configurable,
-            "recursion_limit": settings.agent.recursion_limit,
-        }
-
-        logger.info(
-            "Agent astream_messages — message='%s', configurable=%s",
-            message[:100], configurable,
-        )
-
-        async for chunk, metadata in self._graph.astream(
-            {"messages": [HumanMessage(content=message)]},
-            config=config,
-            stream_mode="messages",
-        ):
-            # Chỉ yield AI text chunks (không phải tool calls hay tool results)
-            if (
-                isinstance(chunk, AIMessageChunk)
-                and chunk.content
-                and not chunk.tool_calls
-                and not chunk.tool_call_chunks
-            ):
-                text = self._normalize_content(chunk.content)
-                if text:
-                    yield text
-
-        logger.info("Agent astream_messages complete — configurable=%s", configurable)
-
-    async def astream_updates(
-        self,
-        message: str,
-        *,
-        configurable: dict[str, Any] = {},
-    ) -> AsyncIterator[dict[str, Any]]:
-        """
-        Stream state updates — sau mỗi node step của graph.
-
-        Yield: dict với format:
-            {
-                "node": "agent" | "tools" | ...,
-                "messages": [...],  # messages mới được thêm ở step này
-            }
-
-        Phù hợp cho debugging, monitoring, hoặc UI cần hiển thị
-        từng bước reasoning của agent (tool calls → results → final answer).
-        """
-        config = {
-            "configurable": configurable,
-            "recursion_limit": settings.agent.recursion_limit,
-        }
-
-        logger.info(
-            "Agent astream_updates — message='%s', configurable=%s",
-            message[:100], thread_id,
-        )
-
-        async for update in self._graph.astream(
-            {"messages": [HumanMessage(content=message)]},
-            config=config,
-            stream_mode="updates",
-        ):
-            # update format: {"node_name": {"messages": [...]}}
-            node_name = next(iter(update), None)
-            if node_name is None:
-                continue
-
-            node_state = update[node_name]
-            messages = node_state.get("messages", [])
-
-            yield {
-                "node": node_name,
-                "messages": messages,
-            }
-
-            logger.debug(
-                "Node '%s' completed — %d messages",
-                node_name, len(messages),
-            )
-
-        logger.info("Agent astream_updates complete — thread_id=%s", thread_id)
 
     # ------------------------------------------------------------------
     # Internal

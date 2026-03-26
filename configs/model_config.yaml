@@ -11,12 +11,19 @@ llm:
 # --- Agent ---
 agent:
   max_iterations: 10                # Max ReAct loop iterations
-  recursion_limit: 5               # LangGraph recursion limit
+  recursion_limit: 20               # LangGraph recursion limit
 
 # --- Vector Store ---
 vector_store:
-  collection_name: "agent_memory"
-  persist_directory: "./data/chroma_db"
+  collection_name: "fnb_collection"
+  persist_directory: "./external_data_storage/qdrant_db"
+  vector_size: 1024
+  distance: "Dot"
+
+# --- Embedding ---
+embedding:
+  model_name: "AITeamVN/Vietnamese_Embedding"
+  dimensions: 1024
 
 # --- Logging ---
 logging:

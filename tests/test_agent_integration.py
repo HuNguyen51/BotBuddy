@@ -15,7 +15,7 @@ pytestmark = pytest.mark.skipif(
     reason="OPENAI_API_KEY not set — skipping integration tests",
 )
 
-from services.llm_service import LLMService
+from llm_service import LLMService
 llm_service = LLMService(model = "ollama/gpt-oss:120b-cloud")
 
 class TestAgentIntegration:

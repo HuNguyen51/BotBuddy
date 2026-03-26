@@ -18,18 +18,12 @@ from __future__ import annotations
 
 from sentence_transformers import SentenceTransformer
 
-from src.data.embeddings.base_embedding import BaseEmbedding
+from src.data.embeddings.base import BaseEmbedding
 from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 
 # ------------------------------------------------------------------
-# Constants
-# ------------------------------------------------------------------
-
-MODEL_NAME = "voyageai/voyage-4-nano"
-DIMENSIONS = 2048
-
 
 class Voyage4NanoEmbedding(BaseEmbedding):
     """
@@ -42,18 +36,18 @@ class Voyage4NanoEmbedding(BaseEmbedding):
           qua encode_query() / encode_document()
     """
 
-    def __init__(self) -> None:
+    def __init__(self, model_name: str, dimensions: int) -> None:
         super().__init__(
-            model_name=MODEL_NAME,
-            dimensions=DIMENSIONS,
+            model_name,
+            dimensions,
         )
         self._model = SentenceTransformer(
-            MODEL_NAME,
+            self.model_name,
             trust_remote_code=True,
-            truncate_dim=DIMENSIONS,
+            truncate_dim=self.dimensions,
         )
 
-        logger.info("Voyage4NanoEmbedding ready — model=%s", MODEL_NAME)
+        logger.info("Voyage4NanoEmbedding ready — model=%s", self.model_name)
 
     def _embed(self, texts: list[str] | str) -> list[list[float]] | list[float]:
         """Embed texts dưới dạng documents."""

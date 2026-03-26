@@ -40,8 +40,7 @@ Filter usage::
 
 from __future__ import annotations
 
-import threading
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
@@ -53,30 +52,10 @@ from qdrant_client.models import (
     PointIdsList 
 )
 
-from src.data.documents.base_document_store import BaseDocumentStore
+from src.data.documents.base import BaseDocumentStore
 from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
-
-
-# Đường dẫn mặc định cho local Qdrant storage
-DEFAULT_QDRANT_PATH = "external_data_storage/qdrant_db"
-
-# ------------------------------------------------------------------
-# Constants
-# ------------------------------------------------------------------
-
-DEFAULT_VECTOR_SIZE = 2048
-DEFAULT_DISTANCE = Distance.DOT
-
-global qdrant_client
-qdrant_client: QdrantClient | None = None
-
-def get_qdrant_client(**kwargs) -> QdrantClient:
-    global qdrant_client
-    if qdrant_client is None:
-        qdrant_client = QdrantClient(**kwargs)
-    return qdrant_client
 
 class QdrantDocumentStore(BaseDocumentStore):
     """
@@ -90,50 +69,23 @@ class QdrantDocumentStore(BaseDocumentStore):
           → dễ dàng inject bất kỳ điều kiện lọc nào từ bên ngoài
     """
 
-    _instance: Optional["QdrantDocumentStore"] = None
-
-    @classmethod
-    def get_instance(
-        cls, 
-        collection_name: str,
-        qdrant_client: QdrantClient,
-        *,
-        vector_size: int = DEFAULT_VECTOR_SIZE,
-        distance: Distance = DEFAULT_DISTANCE,
-    ) -> "QdrantDocumentStore":
-        """
-        Lấy singleton QdrantClient instance.
-
-        Returns:
-            QdrantClient instance (singleton).
-        """
-        if cls._instance is None:
-            cls._instance = cls(
-                collection_name=collection_name,
-                qdrant_client=qdrant_client,
-                vector_size=vector_size,
-                distance=distance,
-            )
-        return cls._instance
-
     def __init__(
         self,
         collection_name: str,
-        qdrant_client: QdrantClient,
+        qdrant_config: dict,
         *,
-        vector_size: int = DEFAULT_VECTOR_SIZE,
-        distance: Distance = DEFAULT_DISTANCE,
+        vector_size: int = 1024,
+        distance: Distance = Distance.DOT,
     ) -> None:
         """
         Args:
             collection_name: Tên collection mặc định.
-            embedding: Embedding model instance. Mặc định: Voyage4NanoEmbedding.
-            qdrant_path: Đường dẫn local Qdrant DB.
+            qdrant_config: Cấu hình QdrantClient.
             vector_size: Số chiều vector.
             distance: Metric khoảng cách (DOT, COSINE, EUCLID).
         """
         self._collection_name = collection_name
-        self._client = qdrant_client
+        self._client = QdrantClient(**qdrant_config)
         self._vector_size = vector_size
         self._distance = distance
 

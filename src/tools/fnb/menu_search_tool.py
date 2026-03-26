@@ -39,8 +39,8 @@ from langchain_core.tools import tool
 
 from qdrant_client.models import FieldCondition, Filter, MatchValue, ScoredPoint
 
-from src.data.documents.base_document_store import BaseDocumentStore
-from src.data.embeddings.base_embedding import BaseEmbedding
+from src.data.documents.base import BaseDocumentStore
+from src.data.embeddings.base import BaseEmbedding
 from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)

@@ -34,7 +34,7 @@ Usage::
     store.delete_collection("old_collection")
 """
 
-from src.data.documents.base_document_store import BaseDocumentStore
-from src.data.documents.qdrant_store import QdrantDocumentStore, get_qdrant_client
+from src.data.documents.base import BaseDocumentStore
+from src.data.documents.factory import DocumentStoreFactory
 
-__all__ = ["BaseDocumentStore", "QdrantDocumentStore", "get_qdrant_client"]
+__all__ = ["BaseDocumentStore", "DocumentStoreFactory"]

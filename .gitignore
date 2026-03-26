@@ -40,3 +40,4 @@ uv.lock
 
 external_data_storage/
 check_list.md
+.agents/*

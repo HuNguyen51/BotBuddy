@@ -16,6 +16,8 @@ from typing import Any
 
 import litellm
 
+from langchain_core.language_models.chat_models import BaseChatModel
+
 from src.settings import settings
 from src.utils.logger import setup_logger
 
@@ -25,41 +27,38 @@ class LLMService:
     """
     Unified LLM interface qua LiteLLM.
     """
-
-    def __init__(
-        self,
-        temperature: float | None = None,
-    ) -> None:
-        self.temperature = temperature if temperature is not None else settings.llm.temperature
-
-        logger.info("LLM Service initialized — temperature=%s", self.temperature)
     
-    def get_chat_model(self, provider: str = "litellm"):
+    @classmethod
+    def get(cls, provider: str = "openai", **kwargs) -> BaseChatModel:
         if provider == "openai":
-            return self.get_openai_chat_model()
+            return cls.__get_openai_chat_model(**kwargs)
         elif provider == "google":
-            return self.get_google_chat_model()
+            return cls.__get_google_chat_model(**kwargs)
         elif provider == "litellm":
-            return self.get_router_chat_model()
+            return cls.__get_router_chat_model(**kwargs)
         else:
             raise ValueError(f"Invalid provider: {provider}")
 
-    def get_openai_chat_model(self):
+
+    @staticmethod
+    def __get_openai_chat_model(
+        model = "gpt-oss:120b-cloud", 
+        base_url = "https://ollama.com/v1", 
+        temperature = 0.0, 
+        **kwargs
+    ):
         """
         Trả về LangChain-compatible ChatOpenAI instance.
         """
         from langchain_openai import ChatOpenAI
-
-        DEFAULT_MODEL = "gpt-oss:120b-cloud"
-        DEFAULT_BASE_URL = "https://ollama.com/v1"
-
-        return ChatOpenAI(
-            model=DEFAULT_MODEL,
-            temperature=self.temperature,
-            base_url=DEFAULT_BASE_URL,
-        )
+        return ChatOpenAI(model=model, base_url=base_url, temperature=temperature, **kwargs)
     
-    def get_google_chat_model(self):
+    @staticmethod
+    def __get_google_chat_model(
+        model = "gemini-2.5-flash", 
+        temperature = 0.0, 
+        **kwargs
+    ):
         """
         Trả về LangChain-compatible ChatGoogleGenerativeAI instance.
 
@@ -67,27 +66,34 @@ class LLMService:
         API key đọc tự động từ env var GOOGLE_API_KEY.
         """
         from langchain_google_genai import ChatGoogleGenerativeAI
+        return ChatGoogleGenerativeAI(model=model, temperature=temperature, **kwargs)
 
-        return ChatGoogleGenerativeAI(
-            model="gemini-2.5-flash",
-            temperature=self.temperature,
-        )
-
-    def get_router_chat_model(self):
-        """
-        Trả về LangChain-compatible ChatLiteLLM instance.
-        Dùng khi cần pass model vào LangGraph / create_agent.
-        """
-        from langchain_litellm import ChatLiteLLMRouter
-        from litellm import Router
-
-        MODEL_LIST = [
+    @staticmethod
+    def __get_router_chat_model(
+        model_list = [
             {
                 "model_name": "gpt-oss:120b-cloud",
                 "litellm_params": {
                     "model": "ollama/gpt-oss:120b-cloud",
                     "api_base": "http://localhost:11434",
-                    "order": 2,  # 👈 Highest priority
+                    "order": 2,
+                },
+            }], 
+        model_fallback = ["gpt-oss:120b-cloud"], 
+        temperature = 0.0, 
+        **kwargs
+    ):
+        """
+        Trả về LangChain-compatible ChatLiteLLM instance.
+        Dùng khi cần pass model vào LangGraph / create_agent.
+
+        model_list = [
+            {
+                "model_name": "gpt-oss:120b-cloud",
+                "litellm_params": {
+                    "model": "ollama/gpt-oss:120b-cloud",
+                    "api_base": "http://localhost:11434",
+                    "order": 2,
                 },
             },
             {
@@ -107,21 +113,25 @@ class LLMService:
             },
         ]
 
-        MODEL_FALLBACK = ["gpt-oss:120b-cloud", "gemini-2.5-flash"]
-        DEFAULT_MODEL = "gpt-oss:120b-cloud"
+        model_fallback = ["gpt-oss:120b-cloud", "gemini-2.5-flash"]
+        default_model = "gpt-oss:120b-cloud"
 
-        litellm_router = Router(
-            model_list=MODEL_LIST,
-            default_fallbacks=MODEL_FALLBACK,
+        """
+        from langchain_litellm import ChatLiteLLMRouter
+        from litellm import Router
+
+        router = Router(
+            model_list=model_list,
+            default_fallbacks=model_fallback,
             enable_pre_call_checks=True, # Required for 'order' to work
-            debug_level="INFO",
-            set_verbose=True,
+            debug_level="WARNING",
         )
 
-        # ChatLiteLLM for multi-provider
+        default_model = model_list[0]["model_name"]
+
         return ChatLiteLLMRouter(
-            router=litellm_router, 
-            model=DEFAULT_MODEL,
-            temperature=self.temperature,
-            mock_testing_fallbacks=True
+            router = router,
+            model = default_model,
+            temperature = temperature,
+            **kwargs
         )

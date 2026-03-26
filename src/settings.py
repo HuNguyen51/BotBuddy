@@ -63,6 +63,21 @@ class VectorStoreSettings(BaseSettings):
     persist_directory: str = Field(
         default=_yaml.get("vector_store", {}).get("persist_directory", "./data/chroma_db")
     )
+    vector_size: int = Field(
+        default=_yaml.get("vector_store", {}).get("vector_size", 1024)
+    )
+    distance: str = Field(
+        default=_yaml.get("vector_store", {}).get("distance", "Dot")
+    )
+
+class EmbeddingSettings(BaseSettings):
+    """Config cho Embeddings."""
+    model_name: str = Field(
+        default=_yaml.get("embedding", {}).get("model_name", "AITeamVN/Vietnamese_Embedding")
+    )
+    dimensions: int = Field(
+        default=_yaml.get("embedding", {}).get("dimensions", 1024)
+    )
 
 
 class LoggingSettings(BaseSettings):
@@ -101,6 +116,7 @@ class Settings(BaseSettings):
     llm: LLMSettings = Field(default_factory=LLMSettings)
     agent: AgentSettings = Field(default_factory=AgentSettings)
     vector_store: VectorStoreSettings = Field(default_factory=VectorStoreSettings)
+    embedding: EmbeddingSettings = Field(default_factory=EmbeddingSettings)
     logging: LoggingSettings = Field(default_factory=LoggingSettings)
 
     model_config = {

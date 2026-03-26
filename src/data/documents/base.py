@@ -30,7 +30,7 @@ Usage::
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Optional
 
 
 class BaseDocumentStore(ABC):
@@ -42,6 +42,20 @@ class BaseDocumentStore(ABC):
 
     Lưu ý: Store KHÔNG embed. Caller tự embed rồi truyền points/vectors vào.
     """
+
+    _instance: Optional["BaseDocumentStore"] = None
+
+    @classmethod
+    def get_instance(
+        cls, 
+        **kwargs
+    ) -> "BaseDocumentStore":
+        """
+        Lấy singleton instance.
+        """
+        if cls._instance is None:
+            cls._instance = cls(**kwargs)
+        return cls._instance
 
     # ------------------------------------------------------------------
     # Collection Management — CRUD cho collections

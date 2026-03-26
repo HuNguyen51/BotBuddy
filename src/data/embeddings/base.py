@@ -25,7 +25,7 @@ Usage::
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Optional
 
 from langchain_core.embeddings import Embeddings
 
@@ -52,6 +52,20 @@ class BaseEmbedding(Embeddings, ABC):
         - aembed_documents() / aembed_query() — async versions
         - Validation, error handling, metadata
     """
+
+    _instance: Optional["BaseEmbedding"] = None
+
+    @classmethod
+    def get_instance(
+        cls, 
+        **kwargs
+    ) -> "BaseEmbedding":
+        """
+        Lấy singleton instance.
+        """
+        if cls._instance is None:
+            cls._instance = cls(**kwargs)
+        return cls._instance
 
     def __init__(
         self,
@@ -90,7 +104,7 @@ class BaseEmbedding(Embeddings, ABC):
     # ------------------------------------------------------------------
 
     @abstractmethod
-    def _embed(self, texts: list[str]|str) -> list[list[float]]:
+    def _embed(self, texts: list[str] | str) -> list[list[float]] | list[float]:
         """
         Core embedding logic — gọi model/API để embed texts.
 
