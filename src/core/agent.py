@@ -17,10 +17,12 @@ from langchain_core.messages import AIMessageChunk, HumanMessage
 from langgraph.checkpoint.memory import MemorySaver
 from langchain.agents import create_agent
 
-from src.settings import settings
+from src.utils.settings import settings
 from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
+
+RECURSION_LIMIT = settings.agent.recursion_limit
 
 class ReActAgent:
     """
@@ -83,7 +85,7 @@ class ReActAgent:
         """
         config = {
             "configurable": configurable,
-            "recursion_limit": settings.agent.recursion_limit,
+            "recursion_limit": RECURSION_LIMIT,
         }
 
         logger.info("Agent invoke — message='%s', configurable=%s", message[:100], configurable)
@@ -106,7 +108,7 @@ class ReActAgent:
         """Async invoke."""
         config = {
             "configurable": configurable,
-            "recursion_limit": settings.agent.recursion_limit,
+            "recursion_limit": RECURSION_LIMIT,
         }
 
         logger.info("Agent ainvoke — message='%s', configurable=%s", message[:100], configurable)
@@ -138,7 +140,7 @@ class ReActAgent:
         """
         config = {
             "configurable": configurable,
-            "recursion_limit": settings.agent.recursion_limit,
+            "recursion_limit": RECURSION_LIMIT,
         }
 
         logger.info("Agent astream — message='%s', configurable=%s", message[:100], configurable)

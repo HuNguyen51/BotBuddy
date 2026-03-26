@@ -34,7 +34,7 @@ Usage::
     store.delete_collection("old_collection")
 """
 
-from src.data.documents.base import BaseDocumentStore
-from src.data.documents.factory import DocumentStoreFactory
+from src.core.data.documents.base import BaseDocumentStore
+from src.core.data.documents.factory import DocumentStoreFactory
 
 __all__ = ["BaseDocumentStore", "DocumentStoreFactory"]

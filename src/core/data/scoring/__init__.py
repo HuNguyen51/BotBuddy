@@ -10,6 +10,6 @@ Usage::
     print(report.summary())  # "12/20 món sẵn sàng để AI tư vấn."
 """
 
-from src.data.scoring.product_scorer import ProductScorer, ScoredProduct, ScoringReport
+from src.core.data.scoring.product_scorer import ProductScorer, ScoredProduct, ScoringReport
 
 __all__ = ["ProductScorer", "ScoredProduct", "ScoringReport"]

@@ -9,8 +9,8 @@ Usage::
     vectors = embedding.embed_documents(["text1", "text2"])
 """
 
-from src.data.embeddings.base import BaseEmbedding
-from src.data.embeddings.factory import EmbeddingFactory
+from src.core.data.embeddings.base import BaseEmbedding
+from src.core.data.embeddings.factory import EmbeddingFactory
 
 __all__ = [
     "BaseEmbedding", 

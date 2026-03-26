@@ -18,12 +18,12 @@ import litellm
 
 from langchain_core.language_models.chat_models import BaseChatModel
 
-from src.settings import settings
+from src.utils.settings import settings
 from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 
-class LLMService:
+class LLMChatModel:
     """
     Unified LLM interface qua LiteLLM.
     """

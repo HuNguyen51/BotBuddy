@@ -20,6 +20,6 @@ Usage::
     print(report.summary())
 """
 
-from src.data.ingestion.fnb_ingestor import FnBDataIngestor, IngestionReport
+from src.core.data.ingestion.fnb_ingestor import FnBDataIngestor, IngestionReport
 
 __all__ = ["FnBDataIngestor", "IngestionReport"]

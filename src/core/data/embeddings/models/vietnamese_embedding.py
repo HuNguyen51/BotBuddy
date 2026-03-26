@@ -19,7 +19,7 @@ from __future__ import annotations
 
 from sentence_transformers import SentenceTransformer
 
-from src.data.embeddings.base import BaseEmbedding
+from src.core.data.embeddings.base import BaseEmbedding
 from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)

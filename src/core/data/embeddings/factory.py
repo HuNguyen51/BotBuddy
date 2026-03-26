@@ -14,7 +14,7 @@ Usage::
 
 from __future__ import annotations
 
-from src.data.embeddings.base import BaseEmbedding
+from src.core.data.embeddings.base import BaseEmbedding
 
 ALLOWLIST = [
     "AITeamVN/Vietnamese_Embedding",
@@ -44,10 +44,10 @@ class EmbeddingFactory:
 
     @staticmethod
     def __get_vietnamese_embedding(**kwargs) -> BaseEmbedding:
-        from src.data.embeddings.models.vietnamese_embedding import VietnameseEmbedding
+        from src.core.data.embeddings.models.vietnamese_embedding import VietnameseEmbedding
         return VietnameseEmbedding.get_instance(**kwargs)
 
     @staticmethod
     def __get_voyage_4_nano(**kwargs) -> BaseEmbedding:
-        from src.data.embeddings.models.voyage_4_nano import Voyage4NanoEmbedding
+        from src.core.data.embeddings.models.voyage_4_nano import Voyage4NanoEmbedding
         return Voyage4NanoEmbedding.get_instance(**kwargs)  

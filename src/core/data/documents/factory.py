@@ -8,8 +8,8 @@ bên dưới sử dụng Qdrant hay provider khác, đảm bảo Dependency Inje
 
 from __future__ import annotations
 
-from src.data.documents.base import BaseDocumentStore
-from src.settings import settings
+from src.core.data.documents.base import BaseDocumentStore
+from src.utils.settings import settings
 from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
@@ -45,5 +45,5 @@ class DocumentStoreFactory:
 
     @staticmethod
     def __get_qdrant(**kwargs) -> BaseDocumentStore:
-        from src.data.documents.stores.qdrant_store import QdrantDocumentStore
+        from src.core.data.documents.stores.qdrant_store import QdrantDocumentStore
         return QdrantDocumentStore.get_instance(**kwargs)

@@ -11,9 +11,9 @@ Usage::
     agent = BaseAgent(system_prompt=ROOT_SYSTEM_PROMPT)
 """
 
-from src.prompts.root_prompt import ROOT_SYSTEM_PROMPT
-from src.prompts.fnb_prompt import FNB_SYSTEM_PROMPT
-from src.prompts.research_prompt import RESEARCH_SYSTEM_PROMPT
+from src.core.prompts.root_prompt import ROOT_SYSTEM_PROMPT
+from src.core.prompts.fnb_prompt import FNB_SYSTEM_PROMPT
+from src.core.prompts.research_prompt import RESEARCH_SYSTEM_PROMPT
 
 __all__ = [
     "ROOT_SYSTEM_PROMPT",

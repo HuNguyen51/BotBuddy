@@ -52,7 +52,7 @@ from qdrant_client.models import (
     PointIdsList 
 )
 
-from src.data.documents.base import BaseDocumentStore
+from src.core.data.documents.base import BaseDocumentStore
 from src.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
